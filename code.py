@@ -160,7 +160,7 @@ for section_data in checklist_data:
                     "Note:",
                     key=item["key_notes"],
                     value=st.session_state[item["key_notes"]], # CORREZIONE: Aggiunto value
-                    height=50,
+                    height=70,
                     label_visibility="collapsed"
                 )
             st.markdown("---")
