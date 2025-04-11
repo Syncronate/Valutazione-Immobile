@@ -318,11 +318,78 @@ st.header("Riepilogo e Impressione Generale")
 # ... (resto invariato) ...
 
 
-# --- Sezione Grafica Riassuntiva ---
-# (Invariato)
+# --- Sezione Grafica Riassuntiva (con Debug) ---
 st.markdown("---")
 st.header(" Riepilogo Grafico")
-# ... (resto invariato) ...
+
+# Grafico Checklist
+st.markdown("#### Punteggi Medi per Sezione (Checklist)")
+section_labels, section_scores, section_averages_dict = calculate_section_averages(checklist_data)
+
+# DEBUG: Mostra i dati calcolati
+# st.write("Dati Checklist per Grafici:")
+# st.write("Etichette:", section_labels)
+# st.write("Punteggi:", section_scores)
+
+# Condizione semplificata per mostrare il grafico
+if not section_scores: # Se la lista dei punteggi è vuota
+    st.warning("Nessun punteggio valido inserito nella checklist per generare i grafici.")
+else:
+    try:
+        # Grafico Radar
+        fig_radar = go.Figure()
+        # Assicurati che section_scores non sia vuoto prima di accedere a [0]
+        valid_scores_radar = [s if isinstance(s, (int, float)) and s > 0 else 0.1 for s in section_scores]
+        if valid_scores_radar: # Procedi solo se ci sono punteggi validi
+             fig_radar.add_trace(go.Scatterpolar(
+                  r=valid_scores_radar + [valid_scores_radar[0]],
+                  theta=section_labels + [section_labels[0]],
+                  fill='toself',
+                  name='Punteggio Medio'
+             ))
+             fig_radar.update_layout(polar=dict(radialaxis=dict(visible=True,range=[0, 5])), showlegend=False, title="Checklist: Punteggio Medio Sezioni (Radar)")
+             st.plotly_chart(fig_radar, use_container_width=True)
+        else:
+             st.warning("Nessun punteggio > 0 nella checklist per il grafico radar.")
+
+
+        # Grafico a Barre
+        fig_bar = px.bar(x=section_labels, y=section_scores, title="Checklist: Punteggio Medio Sezioni (Barre)", labels={'x': 'Sezione', 'y': 'Punteggio Medio'}, text_auto='.1f')
+        fig_bar.update_layout(yaxis_range=[0, 5])
+        fig_bar.update_traces(textposition='outside')
+        st.plotly_chart(fig_bar, use_container_width=True)
+
+    except Exception as e:
+        st.error(f"Errore durante la creazione dei grafici checklist: {e}")
+
+
+# Grafico Stanze
+st.markdown("---")
+st.markdown("#### Punteggi Stanze Specifiche")
+room_labels, room_scores = get_room_scores(room_evaluation_data)
+
+# DEBUG: Mostra i dati calcolati
+# st.write("Dati Stanze per Grafici:")
+# st.write("Etichette:", room_labels)
+# st.write("Punteggi:", room_scores)
+
+# Condizione semplificata per mostrare il grafico
+if not room_scores: # Se la lista dei punteggi è vuota
+     st.warning("Nessun punteggio valido inserito nelle stanze per generare il grafico.")
+else:
+    try:
+        fig_bar_rooms = px.bar(
+            x=room_labels,
+            y=room_scores,
+            title="Punteggio per Stanza Specifica",
+            labels={'x': 'Stanza', 'y': 'Punteggio'},
+            text_auto='.0f'
+        )
+        fig_bar_rooms.update_layout(yaxis_range=[0, 5.5])
+        fig_bar_rooms.update_traces(textposition='outside')
+        st.plotly_chart(fig_bar_rooms, use_container_width=True)
+    except Exception as e:
+        st.error(f"Errore durante la creazione del grafico stanze: {e}")
 
 
 # --- Pulsante Riepilogo Testuale (Aggiornato per Multiselect) ---
