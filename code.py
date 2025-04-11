@@ -312,10 +312,36 @@ for room in room_evaluation_data:
 
 
 # --- Sezione Riepilogo Generale ---
-# (Invariato)
 st.markdown("---")
 st.header("Riepilogo e Impressione Generale")
-# ... (resto invariato) ...
+
+st.text_area(
+    "Punti di Forza Rilevati:",
+    key="punti_forza",
+    value=st.session_state.punti_forza, # Assicurati che 'value' sia presente
+    height=100
+)
+st.text_area(
+    "Criticità / Dubbi Principali Rilevati:",
+    key="criticita",
+    value=st.session_state.criticita, # Assicurati che 'value' sia presente
+    height=100
+)
+
+st.radio(
+    "Punteggio Complessivo Impressione:",
+    options=[1, 2, 3, 4, 5],
+    key="impressione_generale",
+    horizontal=True
+    # Non serve on_change qui perché non è dentro un expander da tenere aperto
+)
+
+st.text_area(
+    "Ulteriori Note / Prossimi Passi:",
+    key="prossimi_passi",
+    value=st.session_state.prossimi_passi, # Assicurati che 'value' sia presente
+    height=100
+)
 
 
 # --- Sezione Grafica Riassuntiva (con Debug) ---
