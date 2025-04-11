@@ -11,6 +11,7 @@ st.set_page_config(
 )
 
 # --- Struttura Dati Checklist (COMPLETA con help_text) ---
+# (Identica alla versione precedente, con tutti gli items e help_text)
 checklist_data = [
     {
         "section": "1. STATO GENERALE E MANUTENZIONE",
@@ -114,11 +115,11 @@ checklist_data = [
     }
 ]
 
-
 # --- Inizializzazione Session State ---
+# (Invariato)
 if 'initialized' not in st.session_state:
     st.session_state.initialized = True
-    st.session_state.active_section = None # Traccia la sezione attiva
+    st.session_state.active_section = None
     for section in checklist_data:
         for item in section["items"]:
             st.session_state[item["key_score"]] = 3
@@ -129,13 +130,13 @@ if 'initialized' not in st.session_state:
     st.session_state.prossimi_passi = ""
     st.session_state.data_visita = ""
 
-
 # --- Funzione Callback per Mantenere Aperto Expander ---
+# (Invariato)
 def set_active_section(section_key):
-    """Imposta la sezione attiva nello stato della sessione."""
     st.session_state.active_section = section_key
 
 # --- Funzione per Calcolare Medie Sezioni ---
+# (Invariato)
 def calculate_section_averages(data):
     averages = {}
     labels = []
@@ -147,7 +148,6 @@ def calculate_section_averages(data):
             score = st.session_state.get(item["key_score"], None)
             if isinstance(score, (int, float)):
                  section_scores.append(score)
-
         if section_scores:
              avg = np.mean(section_scores)
         else:
@@ -158,14 +158,13 @@ def calculate_section_averages(data):
         scores.append(avg)
     return labels, scores, averages
 
-
 # --- Titolo e Info Generali ---
+# (Invariato)
 st.title(" Scheda Valutazione Visita Immobile")
 st.header("Casalino Solfanuccio")
 st.markdown("**Indirizzo:** Via Umbria, San Costanzo (PU)")
 st.markdown("**Prezzo Richiesto:** € 250.000")
 st.text_input("Data Visita:", key="data_visita", value=st.session_state.data_visita)
-
 st.markdown("---")
 st.markdown("**Legenda Punteggio:** `1`=Pessimo, `2`=Scarso, `3`=Sufficiente, `4`=Buono, `5`=Ottimo")
 st.markdown("---")
@@ -173,32 +172,31 @@ st.markdown("---")
 # --- Generazione Dinamica Checklist ---
 for section_data in checklist_data:
     section_key = section_data["section"]
-
     section_scores_list = [st.session_state.get(item["key_score"]) for item in section_data["items"] if isinstance(st.session_state.get(item["key_score"]), (int, float))]
     current_avg_str = f" (Media: {np.mean(section_scores_list):.1f})" if section_scores_list else ""
-
     is_expanded = (st.session_state.get("active_section") == section_key)
 
     with st.expander(f"**{section_key}**{current_avg_str}", expanded=is_expanded):
         for item in section_data["items"]:
+            # Usiamo il label dell'item come titolo principale
             st.markdown(f"**{item['label']}**")
-            # Il 'hint' rimane come caption visibile
+            # Il caption rimane visibile sotto il titolo
             if "hint" in item:
                  st.caption(f"*{item['hint']}*")
 
             col1, col2 = st.columns([1, 2])
 
             with col1:
-                # Aggiungiamo 'help' a st.radio
+                # MODIFICA: Rimosso label_visibility per far apparire l'help
                 st.radio(
-                    "Punteggio:",
+                    "Punteggio:", # L'etichetta ora è visibile
                     options=[1, 2, 3, 4, 5],
                     key=item["key_score"],
                     horizontal=True,
-                    label_visibility="collapsed",
+                    # label_visibility="collapsed", # RIMOSSO/COMMENTATO
                     on_change=set_active_section,
                     args=(section_key,),
-                    help=item.get("help_text") # NUOVO: Aggiunto help parameter
+                    help=item.get("help_text") # Parametro Help
                 )
 
             with col2:
@@ -207,17 +205,17 @@ for section_data in checklist_data:
                     key=item["key_notes"],
                     value=st.session_state[item["key_notes"]],
                     height=70,
-                    label_visibility="collapsed",
+                    label_visibility="collapsed", # Le note possono rimanere collapsed
                     on_change=set_active_section,
                     args=(section_key,)
-                    # Non aggiungiamo help qui per non averlo doppio
                 )
-            st.markdown("---")
+            st.markdown("---") # Divisore tra gli item
 
 # --- Sezione Riepilogo Generale ---
-# (Invariata)
+# (Invariato)
 st.markdown("---")
 st.header("Riepilogo e Impressione Generale")
+# ... (resto del codice identico alla versione precedente) ...
 st.text_area("Punti di Forza Rilevati:", key="punti_forza", value=st.session_state.punti_forza, height=100)
 st.text_area("Criticità / Dubbi Principali Rilevati:", key="criticita", value=st.session_state.criticita, height=100)
 st.radio(
@@ -230,25 +228,20 @@ st.text_area("Ulteriori Note / Prossimi Passi:", key="prossimi_passi", value=st.
 
 
 # --- Sezione Grafica Riassuntiva ---
-# (Invariata)
+# (Invariato)
 st.markdown("---")
 st.header(" Riepilogo Grafico")
+# ... (resto del codice identico alla versione precedente) ...
 section_labels, section_scores, section_averages_dict = calculate_section_averages(checklist_data)
 if not section_labels or not any(s > 0 for s in section_scores):
     st.warning("Inserisci almeno un punteggio per generare i grafici.")
 else:
-    # Grafico Radar
     fig_radar = go.Figure()
     valid_scores_radar = [s if s > 0 else 0.1 for s in section_scores]
-    fig_radar.add_trace(go.Scatterpolar(
-          r=valid_scores_radar + [valid_scores_radar[0]],
-          theta=section_labels + [section_labels[0]],
-          fill='toself',
-          name='Punteggio Medio'
-    ))
+    fig_radar.add_trace(go.Scatterpolar(r=valid_scores_radar + [valid_scores_radar[0]], theta=section_labels + [section_labels[0]], fill='toself', name='Punteggio Medio'))
     fig_radar.update_layout(polar=dict(radialaxis=dict(visible=True,range=[0, 5])), showlegend=False, title="Punteggio Medio per Sezione (Radar)")
     st.plotly_chart(fig_radar, use_container_width=True)
-    # Grafico a Barre
+
     fig_bar = px.bar(x=section_labels, y=section_scores, title="Punteggio Medio per Sezione (Barre)", labels={'x': 'Sezione', 'y': 'Punteggio Medio'}, text_auto='.1f')
     fig_bar.update_layout(yaxis_range=[0, 5])
     fig_bar.update_traces(textposition='outside')
@@ -259,6 +252,7 @@ else:
 # (Invariato)
 st.markdown("---")
 if st.button(" Mostra Riepilogo Testuale Completo"):
+    # ... (resto del codice identico alla versione precedente) ...
     summary = []
     summary.append(f"# Riepilogo Visita: Casalino Solfanuccio")
     summary.append(f"**Data Visita:** {st.session_state.data_visita}")
@@ -291,12 +285,12 @@ if st.button(" Mostra Riepilogo Testuale Completo"):
 
 
 # --- Nota sull'uso ---
-# (Invariata)
+# (Aggiornata)
 st.sidebar.info(
     """
     **Come Usare:**
     1. Compila i punteggi e le note. La sezione attiva rimarrà aperta.
-    2. Passa sopra l'icona ❓ accanto al punteggio per vedere dettagli/domande.
+    2. Passa sopra l'icona ❓ accanto all'etichetta "Punteggio:" per vedere dettagli/domande.
     3. Visualizza i grafici riassuntivi.
     4. Usa "Mostra Riepilogo Testuale Completo" per il report dettagliato.
     """
