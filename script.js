@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // URL API ESCLUSIVAMENTE PER LE ALLERTE DI OGGI
+    // API per le allerte di oggi
     const apiUrl = "https://allertameteo.regione.marche.it/o/api/allerta/get-stato-allerta";
     
-    // Proxy necessario per superare le restrizioni di sicurezza del browser
+    // Proxy per superare problemi di sicurezza (CORS e SSL)
     const proxyUrl = 'https://api.allorigins.win/raw?url=';
 
-    // Configurazioni del widget (non modificare)
+    // Configurazioni del widget
     const areeDiInteresse = ["2", "4"];
     const gerarchiaColori = { "red": 4, "orange": 3, "yellow": 2, "green": 1, "white": 0 };
     const eventiInfo = {
@@ -17,10 +17,10 @@ document.addEventListener('DOMContentLoaded', function() {
         'mareggiate': { testo: 'MAREGGIATE', icona: 'mareggiate.png' }
     };
 
-    // Funzione principale che carica, elabora e visualizza i dati
+    // Funzione principale che carica e visualizza i dati
     async function aggiornaAllerte() {
         try {
-            // 1. Contatta l'API tramite il proxy
+            // 1. Contatta l'API
             const response = await fetch(proxyUrl + encodeURIComponent(apiUrl));
             if (!response.ok) throw new Error(`Errore HTTP: ${response.status}`);
             const datiApi = await response.json();
@@ -29,35 +29,38 @@ document.addEventListener('DOMContentLoaded', function() {
             const allerteFiltrate = datiApi.filter(item => areeDiInteresse.includes(item.area));
             const allerteFinali = {};
             for (const evento in eventiInfo) {
-                allerteFinali[evento] = 'green'; // Imposta "nessun allarme" come default
+                allerteFinali[evento] = 'green';
             }
 
             allerteFiltrate.forEach(area => {
                 area.eventi.split(',').forEach(e => {
                     const [tipo, colore] = e.split(':');
-                    // Se l'allerta è una di quelle che ci interessano E ha una gravità maggiore, la salviamo
                     if (eventiInfo[tipo] && gerarchiaColori[colore] > gerarchiaColori[allerteFinali[tipo]]) {
                         allerteFinali[tipo] = colore;
                     }
                 });
             });
 
-            // 3. Visualizza i risultati
+            // 3. Visualizza i risultati (METODO CORRETTO E STABILE)
             const container = document.getElementById('container');
-            container.innerHTML = ''; // Pulisce la visualizzazione precedente
+            container.innerHTML = ''; // Pulisce la visualizzazione
 
             const ordineVisualizzazione = ['idrogeologica', 'idraulica', 'temporali', 'vento', 'neve', 'mareggiate'];
+            
             ordineVisualizzazione.forEach(evento => {
                 const colore = allerteFinali[evento];
                 const info = eventiInfo[evento];
                 const testo = (colore === 'green' || colore === 'white') ? 'NESSUN ALLARME' : 'ALLARME';
-
-                container.innerHTML += `
-                    <div class="evento ${colore}">
-                        <img src="${info.icona}" class="icona" alt="Icona ${info.testo}">
-                        <p class="testo">${testo}<br>${info.testo}</p>
-                    </div>
+                
+                // Crea un nuovo elemento div per ogni allerta
+                const divEvento = document.createElement('div');
+                divEvento.className = `evento ${colore}`;
+                divEvento.innerHTML = `
+                    <img src="${info.icona}" class="icona" alt="Icona ${info.testo}">
+                    <p class="testo">${testo}<br>${info.testo}</p>
                 `;
+                // Aggiunge l'elemento creato al contenitore
+                container.appendChild(divEvento);
             });
 
         } catch (error) {
