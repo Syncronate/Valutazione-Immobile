@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const coloreItaliano = allerte[evento] || "Nessuna";
                 const colore = mappaColori[coloreItaliano] || "green";
                 const info = eventiInfo[evento];
-                const testoPrimario = (colore === 'green' || colore === 'white') ? 'NESSUN ALLARME' : 'ALLARME';
+                const testoPrimario = (colore === 'green' || colore === 'white') ? 'NO ALLARME' : 'ALLARME';
                 const testoSecondario = info.testo;
 
                 // *** INIZIO SEZIONE MODIFICATA ***
