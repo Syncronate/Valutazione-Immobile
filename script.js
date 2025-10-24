@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
     // URL originale dell'API
     const apiUrl = "https://allertameteo.regione.marche.it/o/api/allerta/get-stato-allerta";
-
-    // *** MODIFICA CHIAVE #1: Cambiato l'URL del proxy ***
-    // Utilizziamo l'endpoint /get che è quello attualmente funzionante.
-    const proxyUrl = 'https://api.allorigins.win/get?url=';
+    
+    // *** MODIFICA CHIAVE: CAMBIAMO COMPLETAMENTE PROXY ***
+    // Dato che api.allorigins.win è rotto, usiamo Thingproxy.
+    const proxyUrl = 'https://thingproxy.freeboard.io/fetch/';
 
     const areeDiInteresse = ["2", "4"];
     const gerarchiaColori = { "red": 4, "orange": 3, "yellow": 2, "green": 1, "white": 0 };
@@ -20,19 +20,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function caricaEVisualizzaAllerte() {
         try {
-            const response = await fetch(proxyUrl + encodeURIComponent(apiUrl));
-
+            // La chiamata ora è composta dal nuovo proxy + l'URL dell'API
+            const response = await fetch(proxyUrl + apiUrl);
+            
             if (!response.ok) {
                 throw new Error(`Errore HTTP: ${response.status} ${response.statusText}`);
             }
-
-            const responseData = await response.json();
             
-            // *** MODIFICA CHIAVE #2: Estrazione dei dati corretta ***
-            // La risposta del proxy è un oggetto JSON che contiene i dati nella proprietà 'contents'.
-            // Dobbiamo quindi fare il parsing di questa proprietà.
-            const dati = JSON.parse(responseData.contents);
-
+            // *** MODIFICA CHIAVE: Torniamo al metodo di lettura originale ***
+            // Questo proxy restituisce i dati direttamente, quindi non serve più ".contents"
+            const dati = await response.json();
+            
             const allerteFiltrate = dati.filter(item => areeDiInteresse.includes(item.area));
             const allerteFinali = {};
             for (const evento in eventiInfo) {
@@ -49,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             const container = document.getElementById('container');
-            container.innerHTML = '';
+            container.innerHTML = ''; 
 
             const ordineVisualizzazione = ['idrogeologica', 'idraulica', 'temporali', 'vento', 'neve', 'mareggiate'];
 
@@ -74,5 +72,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     caricaEVisualizzaAllerte();
-    setInterval(caricaEVisualizzaAllerte, 900000);
+    setInterval(caricaEVisualizzaAllerte, 900000); 
 });
