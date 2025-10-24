@@ -1,13 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // --- CONFIGURAZIONE ---
+    // --- CONFIGURAZIONE (invariata) ---
     const googleSheetCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQRYZz5cm8M6XWpz9aFh62Pw-2q-7pIpViKFV_Zv4qlJMWYTQwg2zMW9L1U_s3QfPdrQtNPvmD8cBUx/pub?gid=62264278&single=true&output=csv";
-
-    // *** MODIFICA CHIAVE ***
-    // Inserisci in questa lista solo i nomi degli eventi per cui hai caricato l'icona.
-    // Lo script mostrerà solo questi.
     const eventiDaMostrare = ['mareggiate', 'vento'];
 
-    // Mappa per tradurre i valori del foglio (Italiano) nei nomi delle classi CSS (Inglese)
     const mappaColori = {
         "Rossa": "red",
         "Arancione": "orange",
@@ -17,9 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
         "Bianca": "white"
     };
 
-    // Le informazioni per tutti gli eventi rimangono qui, lo script sceglierà solo quelle necessarie
     const eventiInfo = {
-        'idrogeologica': { testo: 'IDROGEOLOGICO', icona: 'idrogeologico.png' },
+        'idrogeologica': { testo: 'IDRO-GEOLOGICO', icona: 'idrogeologico.png' },
         'idraulica': { testo: 'IDRAULICO', icona: 'idraulico.png' },
         'temporali': { testo: 'TEMPORALI', icona: 'temporali.png' },
         'vento': { testo: 'VENTO', icona: 'vento.png' },
@@ -28,15 +22,12 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     // --- FINE CONFIGURAZIONE ---
 
-
     async function caricaEVisualizzaAllerte() {
         try {
             const response = await fetch(googleSheetCsvUrl + '&_cacheBuster=' + new Date().getTime());
-            
             if (!response.ok) {
                 throw new Error(`Errore HTTP: ${response.status}`);
             }
-            
             const datiCsv = await response.text();
             
             const righe = datiCsv.trim().split('\n');
@@ -52,21 +43,35 @@ document.addEventListener('DOMContentLoaded', function() {
             const container = document.getElementById('container');
             container.innerHTML = ''; 
 
-            // *** MODIFICA CHIAVE ***
-            // Il ciclo ora usa la nuova lista "eventiDaMostrare" invece di un elenco fisso.
             eventiDaMostrare.forEach(evento => {
                 const coloreItaliano = allerte[evento] || "Nessuna";
                 const colore = mappaColori[coloreItaliano] || "green";
                 const info = eventiInfo[evento];
-                const testoAllarme = (colore === 'green' || colore === 'white') ? 'NESSUN ALLARME' : 'ALLARME';
+                const testoPrimario = (colore === 'green' || colore === 'white') ? 'NESSUN ALLARME' : 'ALLARME';
+                const testoSecondario = info.testo;
+
+                // *** INIZIO SEZIONE MODIFICATA ***
+                // Qui creiamo la nuova struttura HTML che corrisponde al nuovo CSS.
 
                 const divEvento = document.createElement('div');
-                divEvento.className = `evento ${colore}`;
+                // L'evento ora non ha più il colore di sfondo, è solo un contenitore.
+                divEvento.className = 'evento'; 
+                
+                // Creiamo l'innerHTML con la nuova struttura:
+                // - Un .icona-container a cui diamo il colore di sfondo.
+                // - Un .testo con due <span> interni per i colori separati.
                 divEvento.innerHTML = `
-                    <img src="${info.icona}" class="icona" alt="Icona ${info.testo}">
-                    <p class="testo">${testoAllarme}<br>${info.testo}</p>
+                    <div class="icona-container ${colore}">
+                        <img src="${info.icona}" class="icona" alt="Icona ${testoSecondario}">
+                    </div>
+                    <div class="testo">
+                        <span class="testo-primario ${colore}-text">${testoPrimario}</span>
+                        <span class="testo-secondario">${testoSecondario}</span>
+                    </div>
                 `;
+                
                 container.appendChild(divEvento);
+                // *** FINE SEZIONE MODIFICATA ***
             });
 
         } catch (error) {
