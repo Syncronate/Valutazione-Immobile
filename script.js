@@ -1,14 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // URL originale dell'API
+    // URL API ESCLUSIVAMENTE PER LE ALLERTE DI OGGI
     const apiUrl = "https://allertameteo.regione.marche.it/o/api/allerta/get-stato-allerta";
     
-    // *** MODIFICA CHIAVE ***
-    // Utilizziamo il proxy AllOrigins, che è più robusto e gestisce meglio i problemi di certificati SSL e CORS.
+    // Proxy necessario per superare le restrizioni di sicurezza del browser
     const proxyUrl = 'https://api.allorigins.win/raw?url=';
 
+    // Configurazioni del widget (non modificare)
     const areeDiInteresse = ["2", "4"];
     const gerarchiaColori = { "red": 4, "orange": 3, "yellow": 2, "green": 1, "white": 0 };
-
     const eventiInfo = {
         'idrogeologica': { testo: 'IDROGEOLOGICO', icona: 'idrogeologico.png' },
         'idraulica': { testo: 'IDRAULICO', icona: 'idraulico.png' },
@@ -18,50 +17,47 @@ document.addEventListener('DOMContentLoaded', function() {
         'mareggiate': { testo: 'MAREGGIATE', icona: 'mareggiate.png' }
     };
 
-    async function caricaEVisualizzaAllerte() {
+    // Funzione principale che carica, elabora e visualizza i dati
+    async function aggiornaAllerte() {
         try {
-            // La URL da chiamare ora è composta dal proxy + l'URL dell'API codificato
+            // 1. Contatta l'API tramite il proxy
             const response = await fetch(proxyUrl + encodeURIComponent(apiUrl));
+            if (!response.ok) throw new Error(`Errore HTTP: ${response.status}`);
+            const datiApi = await response.json();
             
-            if (!response.ok) {
-                // Se la risposta non è OK, lancia un errore per attivare il blocco catch
-                throw new Error(`Errore HTTP: ${response.status} ${response.statusText}`);
-            }
-            
-            const dati = await response.json();
-            
-            const allerteFiltrate = dati.filter(item => areeDiInteresse.includes(item.area));
+            // 2. Elabora i dati ricevuti
+            const allerteFiltrate = datiApi.filter(item => areeDiInteresse.includes(item.area));
             const allerteFinali = {};
             for (const evento in eventiInfo) {
-                allerteFinali[evento] = 'green';
+                allerteFinali[evento] = 'green'; // Imposta "nessun allarme" come default
             }
 
             allerteFiltrate.forEach(area => {
                 area.eventi.split(',').forEach(e => {
                     const [tipo, colore] = e.split(':');
+                    // Se l'allerta è una di quelle che ci interessano E ha una gravità maggiore, la salviamo
                     if (eventiInfo[tipo] && gerarchiaColori[colore] > gerarchiaColori[allerteFinali[tipo]]) {
                         allerteFinali[tipo] = colore;
                     }
                 });
             });
 
+            // 3. Visualizza i risultati
             const container = document.getElementById('container');
-            container.innerHTML = ''; 
+            container.innerHTML = ''; // Pulisce la visualizzazione precedente
 
             const ordineVisualizzazione = ['idrogeologica', 'idraulica', 'temporali', 'vento', 'neve', 'mareggiate'];
-
             ordineVisualizzazione.forEach(evento => {
                 const colore = allerteFinali[evento];
                 const info = eventiInfo[evento];
-                const testoAllarme = (colore === 'green' || colore === 'white') ? 'NESSUN ALLARME' : 'ALLARME';
+                const testo = (colore === 'green' || colore === 'white') ? 'NESSUN ALLARME' : 'ALLARME';
 
-                const divEvento = document.createElement('div');
-                divEvento.className = `evento ${colore}`;
-                divEvento.innerHTML = `
-                    <img src="${info.icona}" class="icona" alt="Icona ${info.testo}">
-                    <p class="testo">${testoAllarme}<br>${info.testo}</p>
+                container.innerHTML += `
+                    <div class="evento ${colore}">
+                        <img src="${info.icona}" class="icona" alt="Icona ${info.testo}">
+                        <p class="testo">${testo}<br>${info.testo}</p>
+                    </div>
                 `;
-                container.appendChild(divEvento);
             });
 
         } catch (error) {
@@ -70,6 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    caricaEVisualizzaAllerte();
-    setInterval(caricaEVisualizzaAllerte, 900000); 
+    // Esegui la funzione all'avvio e poi ogni 15 minuti
+    aggiornaAllerte();
+    setInterval(aggiornaAllerte, 900000); 
 });
