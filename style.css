@@ -1,81 +1,61 @@
-/* --- Reset Globale e Setup per Pannello 128x128px --- */
+/* --- Reset Globale e Setup --- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* *** MODIFICA CHIAVE #1: Definiamo la dimensione esatta dello schermo *** */
+/* Applichiamo il padding al body per evitare conflitti di box-model */
 html, body {
-    width: 128px;
-    height: 128px;
+    width: 100%;
+    height: 100vh; /* Forza l'altezza al 100% dello schermo */
     font-family: Arial, Helvetica, sans-serif;
     background-color: black;
     overflow: hidden;
+    padding: 8px; /* Spazio dai bordi (puoi cambiarlo se vuoi) */
 }
 
 /* --- Contenitore Principale --- */
 .container {
-    width: 100%; /* Sarà 128px */
-    height: 100%; /* Sarà 128px */
-    
-    /* Applichiamo il padding e il gap calcolati */
-    padding: 5px;
-    gap: 8px;
-    
-    /* Layout Flex per distribuire lo spazio */
     display: flex;
     flex-direction: column;
+    width: 100%;
+    height: 100%; /* Occupa tutto lo spazio DENTRO il body */
+    gap: 8px; /* Spazio tra gli elementi */
 }
 
 /* --- Box della Singola Allerta --- */
 .evento {
-    /* *** MODIFICA CHIAVE #2: Altezza fissa calcolata *** */
-    height: 55px; 
-    
-    /* Rimuoviamo flex: 1, non serve più */
-    width: 100%; /* Occupa tutta la larghezza disponibile (128px - 10px di padding) */
-    
+    flex: 1; /* Occupa una porzione uguale di spazio verticale */
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    
-    padding: 0 10px; /* Spaziatura interna orizzontale */
-    border-radius: 8px; /* Riduciamo il raggio per le nuove dimensioni */
+    padding: 0 10px;
+    border-radius: 8px;
     font-weight: bold;
     overflow: hidden;
 }
 
 /* --- Icona dell'Allerta --- */
 .icona {
-    /* *** MODIFICA CHIAVE #3: Dimensioni fisse calcolate *** */
-    height: 38px;
+    height: 70%; /* 70% dell'altezza del suo contenitore */
     width: auto;
-    margin-right: 8px; /* Spazio tra icona e testo */
+    margin-right: 8px;
     flex-shrink: 0;
 }
 
 /* --- Testo dell'Allerta --- */
 .testo {
-    /* *** MODIFICA CHIAVE #4: Dimensione font fissa *** */
-    font-size: 20px; 
-    
-    line-height: 1.1; /* Permette al testo di stare compatto se va a capo */
+    font-size: 4.5vh; /* Dimensione relativa all'altezza dello schermo */
+    line-height: 1.1;
     text-transform: uppercase;
-    white-space: normal; /* Essenziale per permettere di andare a capo */
+    white-space: normal;
     text-align: left;
     overflow: hidden;
 }
 
-/* --- Messaggio di Caricamento --- */
-.loading {
-    font-size: 18px; /* Adattato al display */
-    color: white;
-    text-align: center;
-    width: 100%;
-}
-
-/* --- Colori di Sfondo e Testo (invariati) --- */
+/* --- Colori e Caricamento --- */
+.loading { font-size: 2em; color: white; text-align: center; width: 100%; }
 .green { background-color: #009966; color: white; }
 .yellow { background-color: #FFC400; color: black; }
 .orange { background-color: #FF9900; color: black; }
