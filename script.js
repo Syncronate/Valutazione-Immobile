@@ -74,11 +74,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
     caricaEVisualizzaAllerte();
     setInterval(caricaEVisualizzaAllerte, 900000);
-});```
-
-### Riassunto delle modifiche principali:
-
-1.  **URL del proxy:** Cambiato da `https://api.allorigins.win/raw?url=` a `https://api.allorigins.win/get?url=`.
-2.  **Elaborazione della risposta:** Dopo aver ricevuto la risposta dal proxy, i dati JSON originali sono contenuti in una stringa nella proprietà `contents`. È quindi necessario prima fare il parsing della risposta del proxy (`responseData`) e poi fare il parsing del contenuto (`responseData.contents`) per ottenere i dati effettivi dell'allerta meteo.
-
-Applicando queste correzioni, il tuo script dovrebbe tornare a funzionare correttamente.
+});
