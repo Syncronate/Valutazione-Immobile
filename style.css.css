@@ -1,0 +1,48 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    background-color: black;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 10px; /* Ridotto per fare spazio */
+}
+.evento {
+    display: flex;
+    align-items: center;
+    width: 98%;
+    margin: 5px 0; /* Ridotto per fare spazio */
+    padding: 10px;
+    border-radius: 15px;
+    color: white;
+    font-weight: bold;
+}
+.icona {
+    width: 65px; /* Leggermente ridotto */
+    height: 65px;
+    margin-right: 15px;
+}
+.testo {
+    font-size: 1.8em; /* Leggermente ridotto per adattarsi */
+    line-height: 1.1;
+}
+.loading {
+    font-size: 2em;
+    color: white;
+}
+/* Colori di sfondo e testo */
+.green { background-color: #009966; color: white; }
+.yellow { background-color: #FFCC00; color: black; }
+.orange { background-color: #FF9900; color: black; }
+.red { background-color: #CC3333; color: white; }
+.white { background-color: #333333; color: white; }
