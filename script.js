@@ -1,12 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
     const apiOggi = "https://allertameteo.regione.marche.it/o/api/allerta/get-stato-allerta";
-    const proxy = "https://cors-anywhere.herokuapp.com/"; 
+    
+    // **** PARTE MODIFICATA ****
+    // Utilizziamo un proxy alternativo e più affidabile.
+    const proxy = "https://corsproxy.io/?"; 
     
     const areeDiInteresse = ["2", "4"];
     const gerarchiaColori = { "red": 4, "orange": 3, "yellow": 2, "green": 1, "white": 0 };
 
-    // **** UNICA PARTE MODIFICATA ****
-    // Ora definiamo TUTTI gli eventi che ci interessano, con le loro icone e testi.
     const eventiInfo = {
         'idrogeologica': { testo: 'IDROGEOLOGICO', icona: 'idrogeologico.png' },
         'idraulica': { testo: 'IDRAULICO', icona: 'idraulico.png' },
@@ -18,7 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function caricaEVisualizzaAllerte() {
         try {
-            const response = await fetch(proxy + apiOggi);
+            // La URL da chiamare ora è composta dal proxy + URL originale
+            const response = await fetch(proxy + encodeURIComponent(apiOggi));
             if (!response.ok) throw new Error(`Errore HTTP: ${response.status}`);
             const dati = await response.json();
             
@@ -41,10 +43,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const container = document.getElementById('container');
             container.innerHTML = ''; 
 
-            // Ordine di visualizzazione personalizzato
             const ordineVisualizzazione = ['idrogeologica', 'idraulica', 'temporali', 'vento', 'neve', 'mareggiate'];
 
             ordineVisualizzazione.forEach(evento => {
+                if (!allerteFinali[evento]) return; // Salta se per qualche motivo l'evento non è nei dati
+
                 const colore = allerteFinali[evento];
                 const info = eventiInfo[evento];
                 const testoAllarme = (colore === 'green' || colore === 'white') ? 'NESSUN ALLARME' : 'ALLARME';
