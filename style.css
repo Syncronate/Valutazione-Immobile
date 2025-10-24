@@ -1,18 +1,20 @@
-/* --- Reset Globale e Setup --- */
+/* --- CSS Completo per Nuovo Layout --- */
+
+/* --- Reset Globale --- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Applichiamo il padding al body per evitare conflitti di box-model */
+/* --- Setup del Body --- */
 html, body {
     width: 100%;
-    height: 100vh; /* Forza l'altezza al 100% dello schermo */
+    height: 100vh;
     font-family: Arial, Helvetica, sans-serif;
     background-color: black;
     overflow: hidden;
-    padding: 4px 8px 12px 8px; /* Spazio dai bordi (puoi cambiarlo se vuoi) */
+    padding: 8px; /* Mantiene una piccola cornice nera */
 }
 
 /* --- Contenitore Principale --- */
@@ -20,44 +22,70 @@ html, body {
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 100%; /* Occupa tutto lo spazio DENTRO il body */
-    gap: 8px; /* Spazio tra gli elementi */
+    height: 100%;
+    gap: 8px;
 }
 
 /* --- Box della Singola Allerta --- */
 .evento {
-    flex: 1; /* Occupa una porzione uguale di spazio verticale */
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    padding: 0 10px;
-    border-radius: 8px;
-    font-weight: bold;
+    gap: 12px; /* Spazio tra blocco icona e blocco testo */
+    flex: 1;
     overflow: hidden;
+    padding: 5px; /* Piccolo padding interno */
 }
 
-/* --- Icona dell'Allerta --- */
+/* --- Contenitore dell'Icona (il quadrato colorato) --- */
+.icona-container {
+    height: 100%;
+    aspect-ratio: 1 / 1; /* Forza il contenitore ad essere un quadrato */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    padding: 8px;
+    flex-shrink: 0; /* Impedisce al quadrato di rimpicciolirsi */
+}
+
+/* --- Icona (l'immagine SVG/PNG) --- */
 .icona {
-    height: 70%; /* 70% dell'altezza del suo contenitore */
-    width: auto;
-    margin-right: 8px;
-    flex-shrink: 0;
+    width: 100%;
+    height: 100%;
+    /* TRUCCO: Questo CSS trasforma un'icona nera in una bianca */
+    filter: brightness(0) invert(1);
 }
 
-/* --- Testo dell'Allerta --- */
+/* --- Contenitore del Testo --- */
 .testo {
-    font-size: 7.5vh; /* Dimensione relativa all'altezza dello schermo */
+    display: flex;
+    flex-direction: column; /* Mette i testi uno sopra l'altro */
+    justify-content: center; /* Centra verticalmente le linee di testo */
+    height: 100%;
     line-height: 1.1;
-    text-transform: uppercase;
-    white-space: normal;
-    text-align: left;
-    overflow: hidden;
 }
 
-/* --- Colori e Caricamento --- */
-.loading { font-size: 2em; color: white; text-align: center; width: 100%; }
-.green { background-color: #009966; color: white; }
-.yellow { background-color: #FFC400; color: black; }
-.orange { background-color: #FF9900; color: black; }
-.red { background-color: #CC3333; color: white; }
-.white { background-color: #333333; color: white; }
+/* --- Stile Testi --- */
+.testo-primario, .testo-secondario {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 4.2vh; /* Puoi aggiustare questo valore */
+}
+
+.testo-secondario {
+    color: white; /* Il testo secondario è sempre bianco */
+}
+
+/* --- Classi per Colori Sfondo Icona --- */
+.green { background-color: #009966; }
+.yellow { background-color: #FFC400; }
+.orange { background-color: #FF9900; }
+.red { background-color: #CC3333; }
+.white { background-color: #333333; }
+
+/* --- Classi per Colori Testo Primario --- */
+.green-text { color: #009966; }
+.yellow-text { color: #FFC400; }
+.orange-text { color: #FF9900; }
+.red-text { color: #CC3333; }
+.white-text { color: #CCCCCC; }
