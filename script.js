@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
     // URL originale dell'API
     const apiUrl = "https://allertameteo.regione.marche.it/o/api/allerta/get-stato-allerta";
-    
+
     // *** MODIFICA CHIAVE ***
-    // Utilizziamo il proxy AllOrigins, che è più robusto e gestisce meglio i problemi di certificati SSL e CORS.
-    const proxyUrl = 'https://api.allorigins.win/raw?url=';
+    // Utilizziamo un endpoint diverso per il proxy e modificheremo come vengono letti i dati
+    const proxyUrl = 'https://api.allorigins.win/get?url=';
 
     const areeDiInteresse = ["2", "4"];
     const gerarchiaColori = { "red": 4, "orange": 3, "yellow": 2, "green": 1, "white": 0 };
@@ -20,16 +20,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function caricaEVisualizzaAllerte() {
         try {
-            // La URL da chiamare ora è composta dal proxy + l'URL dell'API codificato
             const response = await fetch(proxyUrl + encodeURIComponent(apiUrl));
-            
+
             if (!response.ok) {
-                // Se la risposta non è OK, lancia un errore per attivare il blocco catch
                 throw new Error(`Errore HTTP: ${response.status} ${response.statusText}`);
             }
+
+            const responseData = await response.json();
             
-            const dati = await response.json();
-            
+            // *** MODIFICA CHIAVE ***
+            // I dati reali sono nella proprietà 'contents' della risposta del proxy
+            const dati = JSON.parse(responseData.contents);
+
             const allerteFiltrate = dati.filter(item => areeDiInteresse.includes(item.area));
             const allerteFinali = {};
             for (const evento in eventiInfo) {
@@ -46,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             const container = document.getElementById('container');
-            container.innerHTML = ''; 
+            container.innerHTML = '';
 
             const ordineVisualizzazione = ['idrogeologica', 'idraulica', 'temporali', 'vento', 'neve', 'mareggiate'];
 
@@ -71,5 +73,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     caricaEVisualizzaAllerte();
-    setInterval(caricaEVisualizzaAllerte, 900000); 
-});
+    setInterval(caricaEVisualizzaAllerte, 900000);
+});```
+
+### Riassunto delle modifiche principali:
+
+1.  **URL del proxy:** Cambiato da `https://api.allorigins.win/raw?url=` a `https://api.allorigins.win/get?url=`.
+2.  **Elaborazione della risposta:** Dopo aver ricevuto la risposta dal proxy, i dati JSON originali sono contenuti in una stringa nella proprietà `contents`. È quindi necessario prima fare il parsing della risposta del proxy (`responseData`) e poi fare il parsing del contenuto (`responseData.contents`) per ottenere i dati effettivi dell'allerta meteo.
+
+Applicando queste correzioni, il tuo script dovrebbe tornare a funzionare correttamente.
