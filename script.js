@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // URL originale dell'API
     const apiUrl = "https://allertameteo.regione.marche.it/o/api/allerta/get-stato-allerta";
 
-    // *** MODIFICA CHIAVE ***
-    // Utilizziamo un endpoint diverso per il proxy e modificheremo come vengono letti i dati
+    // *** MODIFICA CHIAVE #1: Cambiato l'URL del proxy ***
+    // Utilizziamo l'endpoint /get che è quello attualmente funzionante.
     const proxyUrl = 'https://api.allorigins.win/get?url=';
 
     const areeDiInteresse = ["2", "4"];
@@ -28,8 +28,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const responseData = await response.json();
             
-            // *** MODIFICA CHIAVE ***
-            // I dati reali sono nella proprietà 'contents' della risposta del proxy
+            // *** MODIFICA CHIAVE #2: Estrazione dei dati corretta ***
+            // La risposta del proxy è un oggetto JSON che contiene i dati nella proprietà 'contents'.
+            // Dobbiamo quindi fare il parsing di questa proprietà.
             const dati = JSON.parse(responseData.contents);
 
             const allerteFiltrate = dati.filter(item => areeDiInteresse.includes(item.area));
