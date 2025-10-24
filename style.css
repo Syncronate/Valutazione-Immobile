@@ -1,63 +1,39 @@
-/* --- Reset Globale e Setup --- */
-* {
-    margin: 0;
-    padding: 0;
+/* --- CSS DI TEST DIAGNOSTICO --- */
+
+/* L'elemento radice dovrebbe essere rosso */
+html {
+    background-color: red;
+    height: 100%;
+    width: 100%;
+}
+
+/* Il body dovrebbe essere blu e riempire l'html */
+body {
+    background-color: blue;
+    height: 100%;
+    width: 100%;
+    padding: 10px; /* Aggiungo un padding per vederlo meglio */
     box-sizing: border-box;
 }
 
-/* Applichiamo il padding al body per evitare conflitti di box-model */
-html, body {
-    width: 100%;
-    height: 100vh; /* Forza l'altezza al 100% dello schermo */
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: black;
-    overflow: hidden;
-    padding: 8px; /* Spazio dai bordi (puoi cambiarlo se vuoi) */
-}
-
-/* --- Contenitore Principale --- */
+/* Il container dovrebbe essere verde lime e riempire il body */
 .container {
+    background-color: lime;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    width: 100%;
-    height: 100%; /* Occupa tutto lo spazio DENTRO il body */
-    gap: 8px; /* Spazio tra gli elementi */
+    gap: 10px;
 }
 
-/* --- Box della Singola Allerta --- */
+/* I box interni dovrebbero essere magenta */
 .evento {
-    flex: 1; /* Occupa una porzione uguale di spazio verticale */
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 0 10px;
-    border-radius: 8px;
-    font-weight: bold;
-    overflow: hidden;
+    background-color: magenta;
+    flex: 1; /* Dividono lo spazio */
 }
 
-/* --- Icona dell'Allerta --- */
-.icona {
-    height: 70%; /* 70% dell'altezza del suo contenitore */
-    width: auto;
-    margin-right: 8px;
-    flex-shrink: 0;
-}
-
-/* --- Testo dell'Allerta --- */
 .testo {
-    font-size: 4.5vh; /* Dimensione relativa all'altezza dello schermo */
-    line-height: 1.1;
-    text-transform: uppercase;
-    white-space: normal;
-    text-align: left;
-    overflow: hidden;
+    color: white;
+    font-size: 30px;
+    text-align: center;
 }
-
-/* --- Colori e Caricamento --- */
-.loading { font-size: 2em; color: white; text-align: center; width: 100%; }
-.green { background-color: #009966; color: white; }
-.yellow { background-color: #FFC400; color: black; }
-.orange { background-color: #FF9900; color: black; }
-.red { background-color: #CC3333; color: white; }
-.white { background-color: #333333; color: white; }
