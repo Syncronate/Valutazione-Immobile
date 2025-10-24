@@ -1,68 +1,81 @@
-/* --- Reset Globale --- */
+/* --- Reset Globale e Setup per Pannello 128x128px --- */
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box; /* Mantenuto per buona misura */
+    box-sizing: border-box;
 }
 
-/* *** MODIFICA CHIAVE #1: Applichiamo il padding qui *** */
+/* *** MODIFICA CHIAVE #1: Definiamo la dimensione esatta dello schermo *** */
 html, body {
-    width: 100%;
-    height: 100%;
+    width: 128px;
+    height: 128px;
     font-family: Arial, Helvetica, sans-serif;
     background-color: black;
     overflow: hidden;
-    
-    /* Applichiamo la spaziatura esterna al body.
-       Il box-sizing qui è cruciale per evitare che il body diventi più grande dello schermo. */
-    padding: 1rem;
 }
 
 /* --- Contenitore Principale --- */
 .container {
+    width: 100%; /* Sarà 128px */
+    height: 100%; /* Sarà 128px */
+    
+    /* Applichiamo il padding e il gap calcolati */
+    padding: 5px;
+    gap: 8px;
+    
+    /* Layout Flex per distribuire lo spazio */
     display: flex;
     flex-direction: column;
-    width: 100%;
-    height: 100%; /* Occupa tutto lo spazio DENTRO il body paddato */
-    
-    /* *** MODIFICA CHIAVE #2: Rimuoviamo il padding da qui *** */
-    /* padding: 1rem; */ /* RIMOSSO */
-    
-    gap: 1rem; /* Il gap gestisce lo spazio TRA gli elementi */
 }
 
-/* --- Box della Singola Allerta (invariato) --- */
+/* --- Box della Singola Allerta --- */
 .evento {
-    flex: 1; /* Si espande per riempire lo spazio del .container */
+    /* *** MODIFICA CHIAVE #2: Altezza fissa calcolata *** */
+    height: 55px; 
+    
+    /* Rimuoviamo flex: 1, non serve più */
+    width: 100%; /* Occupa tutta la larghezza disponibile (128px - 10px di padding) */
+    
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    padding: 1rem 2rem;
-    border-radius: 1rem;
+    
+    padding: 0 10px; /* Spaziatura interna orizzontale */
+    border-radius: 8px; /* Riduciamo il raggio per le nuove dimensioni */
     font-weight: bold;
     overflow: hidden;
 }
 
-/* --- Icona e Testo (invariati) --- */
+/* --- Icona dell'Allerta --- */
 .icona {
-    height: 70%;
+    /* *** MODIFICA CHIAVE #3: Dimensioni fisse calcolate *** */
+    height: 38px;
     width: auto;
-    margin-right: 1.5rem;
+    margin-right: 8px; /* Spazio tra icona e testo */
     flex-shrink: 0;
 }
 
+/* --- Testo dell'Allerta --- */
 .testo {
-    font-size: 4.5vh;
-    line-height: 1.1;
+    /* *** MODIFICA CHIAVE #4: Dimensione font fissa *** */
+    font-size: 20px; 
+    
+    line-height: 1.1; /* Permette al testo di stare compatto se va a capo */
     text-transform: uppercase;
-    white-space: normal;
+    white-space: normal; /* Essenziale per permettere di andare a capo */
     text-align: left;
-    flex-grow: 1;
     overflow: hidden;
 }
 
-/* --- Stili Colori e Caricamento (invariati) --- */
-.loading { font-size: 2em; color: white; text-align: center; width: 100%; }
+/* --- Messaggio di Caricamento --- */
+.loading {
+    font-size: 18px; /* Adattato al display */
+    color: white;
+    text-align: center;
+    width: 100%;
+}
+
+/* --- Colori di Sfondo e Testo (invariati) --- */
 .green { background-color: #009966; color: white; }
 .yellow { background-color: #FFC400; color: black; }
 .orange { background-color: #FF9900; color: black; }
