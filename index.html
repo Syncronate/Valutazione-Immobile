@@ -1,18 +1,14 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    
-    <!-- *** QUESTA È LA RIGA CHE RISOLVE IL PROBLEMA *** -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Allerta Meteo Marche</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="container" id="container">
-        <div class="loading">Caricamento dati in corso...</div>
+<!-- L'evento non ha più un colore di sfondo -->
+<div class="evento">
+    <!-- 1. Un contenitore solo per l'icona, che riceve il colore -->
+    <div class="icona-container green">
+        <img class="icona" src="path/to/icon.svg" alt="">
     </div>
-    <script src="script.js"></script>
-</body>
-</html>
+
+    <!-- 2. Un contenitore per il testo -->
+    <div class="testo">
+        <!-- 3. Testo diviso in due span per avere colori diversi -->
+        <span class="testo-primario green-text">NO ALLARME</span>
+        <span class="testo-secondario">IDRO-GEOLOGICO</span>
+    </div>
+</div>
