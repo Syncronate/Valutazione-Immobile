@@ -1,7 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     // --- CONFIGURAZIONE ---
-    // Link al file .csv pubblico del tuo Google Sheet
     const googleSheetCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQRYZz5cm8M6XWpz9aFh62Pw-2q-7pIpViKFV_Zv4qlJMWYTQwg2zMW9L1U_s3QfPdrQtNPvmD8cBUx/pub?gid=62264278&single=true&output=csv";
+
+    // *** MODIFICA CHIAVE ***
+    // Inserisci in questa lista solo i nomi degli eventi per cui hai caricato l'icona.
+    // Lo script mostrerà solo questi.
+    const eventiDaMostrare = ['mareggiate', 'vento'];
 
     // Mappa per tradurre i valori del foglio (Italiano) nei nomi delle classi CSS (Inglese)
     const mappaColori = {
@@ -9,11 +13,11 @@ document.addEventListener('DOMContentLoaded', function() {
         "Arancione": "orange",
         "Gialla": "yellow",
         "Verde": "green",
-        "Nessuna": "green", // Mostriamo 'Nessun Allarme' verde
+        "Nessuna": "green",
         "Bianca": "white"
     };
 
-    // Informazioni per ogni tipo di evento da visualizzare
+    // Le informazioni per tutti gli eventi rimangono qui, lo script sceglierà solo quelle necessarie
     const eventiInfo = {
         'idrogeologica': { testo: 'IDROGEOLOGICO', icona: 'idrogeologico.png' },
         'idraulica': { testo: 'IDRAULICO', icona: 'idraulico.png' },
@@ -22,15 +26,11 @@ document.addEventListener('DOMContentLoaded', function() {
         'neve': { testo: 'NEVE', icona: 'neve.png' },
         'mareggiate': { testo: 'MAREGGIATE', icona: 'mareggiate.png' }
     };
-    
-    // Ordine in cui verranno mostrati gli elementi
-    const ordineVisualizzazione = ['idrogeologica', 'idraulica', 'temporali', 'vento', 'neve', 'mareggiate'];
     // --- FINE CONFIGURAZIONE ---
 
 
     async function caricaEVisualizzaAllerte() {
         try {
-            // Aggiungiamo un parametro casuale per evitare problemi di cache del file CSV
             const response = await fetch(googleSheetCsvUrl + '&_cacheBuster=' + new Date().getTime());
             
             if (!response.ok) {
@@ -45,7 +45,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const allerte = {};
             header.forEach((titolo, index) => {
-                // Pulisce il titolo da eventuali spazi o caratteri strani
                 const titoloPulito = titolo.trim().toLowerCase();
                 allerte[titoloPulito] = valori[index].trim();
             });
@@ -53,7 +52,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const container = document.getElementById('container');
             container.innerHTML = ''; 
 
-            ordineVisualizzazione.forEach(evento => {
+            // *** MODIFICA CHIAVE ***
+            // Il ciclo ora usa la nuova lista "eventiDaMostrare" invece di un elenco fisso.
+            eventiDaMostrare.forEach(evento => {
                 const coloreItaliano = allerte[evento] || "Nessuna";
                 const colore = mappaColori[coloreItaliano] || "green";
                 const info = eventiInfo[evento];
@@ -75,5 +76,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     caricaEVisualizzaAllerte();
-    setInterval(caricaEVisualizzaAllerte, 900000); // Ricarica ogni 15 minuti
+    setInterval(caricaEVisualizzaAllerte, 900000);
 });
