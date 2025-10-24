@@ -10,9 +10,7 @@ html, body {
     height: 100%;
     font-family: Arial, Helvetica, sans-serif;
     background-color: black;
-    
-    /* *** MODIFICA CHIAVE #1: Impedisce qualsiasi tipo di barra di scorrimento *** */
-    overflow: hidden;
+    overflow: hidden; /* Mantenuto per evitare lo scroll globale */
 }
 
 /* --- Contenitore Principale --- */
@@ -22,42 +20,46 @@ html, body {
     width: 100%;
     height: 100%;
     padding: 1rem;
-    gap: 1rem; /* 'gap' è più pulito dei margini per la spaziatura */
+    gap: 1rem;
 }
 
 /* --- Box della Singola Allerta --- */
 .evento {
-    flex: 1; /* Occupa una porzione uguale di spazio */
+    flex: 1;
     display: flex;
-    align-items: center;
+    align-items: center; /* Allinea verticalmente icona e testo */
     justify-content: flex-start;
-    padding: 0 2rem;
+    padding: 1rem 2rem;
     border-radius: 1rem;
     font-weight: bold;
-    
-    /* Impedisce al contenuto interno di "uscire" dal box */
-    overflow: hidden; 
+    overflow: hidden; /* Mantenuto per sicurezza */
 }
 
 /* --- Icona dell'Allerta --- */
 .icona {
-    /* *** MODIFICA CHIAVE #2: Dimensione basata sulla larghezza dello schermo *** */
-    /* L'icona sarà alta il 4% della larghezza dello schermo */
-    height: 4vw; 
-    width: auto;
+    /* *** MODIFICA CHIAVE #1: Altezza relativa al contenitore *** */
+    /* L'icona occuperà una percentuale (es. 70%) dell'altezza del suo contenitore. */
+    height: 70%;
+    width: auto; /* Mantiene le proporzioni corrette */
     margin-right: 1.5rem;
+    flex-shrink: 0; /* Impedisce all'icona di rimpicciolirsi */
 }
 
 /* --- Testo dell'Allerta --- */
 .testo {
-    /* *** MODIFICA CHIAVE #3: Dimensione del testo basata sulla larghezza dello schermo *** */
-    /* Il testo sarà alto il 3% della larghezza dello schermo */
-    font-size: 3vw; 
-    line-height: 1; /* Riduciamo l'interlinea per compattare il testo */
+    /* *** MODIFICA CHIAVE #2: Dimensione del testo flessibile *** */
+    /* Usa un'unità relativa come vh (viewport height) o un valore fisso che sai essere leggibile.
+       vh è spesso più stabile di vw per il testo su schermi con risoluzioni diverse. */
+    font-size: 4.5vh;
+    line-height: 1.1;
     text-transform: uppercase;
-    
-    /* Impedisce al testo di andare a capo se troppo lungo */
-    white-space: nowrap; 
+
+    /* *** MODIFICA CHIAVE #3: Permetti al testo di andare a capo *** */
+    /* Invece di 'nowrap', permettiamo al testo di andare a capo se è troppo lungo. */
+    white-space: normal;
+    text-align: left; /* O 'center' se preferisci */
+    flex-grow: 1; /* Occupa lo spazio rimanente */
+    overflow: hidden; /* Nasconde l'eventuale testo in eccesso */
 }
 
 /* --- Messaggio di Caricamento --- */
