@@ -3,46 +3,69 @@ html, body {
     padding: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden;
     font-family: Arial, sans-serif;
     background-color: black;
+    /* Ho rimosso 'overflow: hidden;' per evitare che nasconda contenuto inaspettatamente */
 }
+
 .container {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column; /* Mantiene gli elementi impilati verticalmente */
     width: 100%;
     height: 100%;
     box-sizing: border-box;
-    padding: 10px; /* Ridotto per fare spazio */
+    padding: 10px; /* Un po' di spazio dai bordi */
 }
+
 .evento {
+    /* *** MODIFICA CHIAVE #1: Layout Flessibile *** */
+    /* 'flex: 1' fa in modo che ogni box .evento si espanda per occupare una frazione
+       uguale dello spazio verticale disponibile. Con 2 box, ognuno occuperà il 50% dell'altezza. */
+    flex: 1;
+
     display: flex;
-    align-items: center;
-    width: 98%;
-    margin: 5px 0; /* Ridotto per fare spazio */
-    padding: 10px;
+    align-items: center;      /* Allinea icona e testo verticalmente tra loro */
+    justify-content: center;  /* Centra tutto il contenuto orizzontalmente nel box */
+    
+    /* Usiamo 'width: 100%' perché il padding del genitore (.container) tiene già i box lontani dai bordi */
+    width: 100%; 
+    margin: 5px 0;
     border-radius: 15px;
     color: white;
     font-weight: bold;
+
+    /* Aggiungiamo una transizione per un effetto più gradevole */
+    transition: transform 0.2s;
 }
+
 .icona {
-    width: 65px; /* Leggermente ridotto */
-    height: 65px;
-    margin-right: 15px;
+    /* *** MODIFICA CHIAVE #2: Dimensioni Adattive *** */
+    /* Riduciamo leggermente le dimensioni per un look più pulito */
+    width: 55px; 
+    height: 55px;
+    margin-right: 20px; /* Più spazio tra icona e testo */
 }
+
 .testo {
-    font-size: 1.8em; /* Leggermente ridotto per adattarsi */
-    line-height: 1.1;
+    /* Riduciamo la dimensione del testo per assicurare che ci stia sempre */
+    font-size: 1.5em; 
+    line-height: 1.2;
+    text-align: left; /* Allinea il testo a sinistra per una migliore leggibilità */
 }
+
 .loading {
     font-size: 2em;
     color: white;
+    /* Lo posizioniamo al centro della pagina mentre carica */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
-/* Colori di sfondo e testo */
+
+/* Colori di sfondo e testo (ho scurito il giallo per una leggibilità migliore del testo nero) */
 .green { background-color: #009966; color: white; }
-.yellow { background-color: #FFCC00; color: black; }
+.yellow { background-color: #FFC400; color: black; }
 .orange { background-color: #FF9900; color: black; }
 .red { background-color: #CC3333; color: white; }
 .white { background-color: #333333; color: white; }
