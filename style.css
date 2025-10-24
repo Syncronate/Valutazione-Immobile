@@ -46,7 +46,7 @@ html, body {
 
 /* --- Testo dell'Allerta --- */
 .testo {
-    font-size: 4.5vh; /* Dimensione relativa all'altezza dello schermo */
+    font-size: 7.5vh; /* Dimensione relativa all'altezza dello schermo */
     line-height: 1.1;
     text-transform: uppercase;
     white-space: normal;
