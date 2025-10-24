@@ -1,58 +1,64 @@
-/* --- Reset e Impostazioni Globali --- */
-html {
-    font-size: 16px; /* Imposta una base per le unità 'rem' */
-}
-
-html, body {
+/* --- Reset Globale e Robusto --- */
+/* Questo assicura che non ci siano stili di default imprevisti dall'ambiente del display */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+/* --- Impostazione dell'Altezza a Schermo Pieno (Metodo Compatibile) --- */
+html, body {
     width: 100%;
-    height: 100%;
+    height: 100%; /* Forza i contenitori radice a essere alti quanto la finestra del browser */
     font-family: Arial, Helvetica, sans-serif;
     background-color: black;
-    box-sizing: border-box; /* Assicura che padding e bordi non aumentino la dimensione totale */
 }
 
 /* --- Contenitore Principale --- */
 .container {
     display: flex;
-    flex-direction: column; /* Impila gli elementi verticalmente */
+    flex-direction: column;
     
-    /* *** MODIFICA CHIAVE #1: Altezza e Spaziatura *** */
-    height: 100vh; /* Usa il 100% dell'altezza visibile dello schermo */
-    padding: 1rem; /* Spazio dai bordi dello schermo (es. 16px) */
-    gap: 1rem;     /* Spazio uniforme TRA i box delle allerte */
+    /* *** MODIFICA CHIAVE #1: Altezza ereditata *** */
+    /* Invece di 100vh, usiamo 100% per ereditare l'altezza dal body, che è un metodo molto più sicuro */
+    width: 100%;
+    height: 100%;
     
-    box-sizing: border-box;
+    padding: 1rem;
 }
 
 /* --- Box della Singola Allerta --- */
 .evento {
-    /* *** MODIFICA CHIAVE #2: Divisione dello Spazio *** */
-    flex: 1; /* Ogni box si espande per occupare una parte uguale dello spazio disponibile */
+    flex: 1; /* Mantiene la divisione equa dello spazio */
     
     display: flex;
-    align-items: center;    /* Allinea verticalmente icona e testo */
-    justify-content: flex-start; /* Allinea il contenuto a sinistra, come nel sito di esempio */
-    
-    padding: 0 2rem; /* Spazio interno orizzontale (es. 32px), zero verticale */
-    border-radius: 1rem; /* Angoli arrotondati (es. 16px) */
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 2rem;
+    border-radius: 1rem;
     font-weight: bold;
+    
+    /* *** MODIFICA CHIAVE #2: Spaziatura con Margini *** */
+    /* Sostituiamo 'gap' (che potrebbe non essere supportato) con i margini. */
+    margin-bottom: 1rem;
+}
+/* Rimuoviamo il margine dall'ultimo elemento per non avere spazio extra in fondo */
+.evento:last-child {
+    margin-bottom: 0;
 }
 
 /* --- Icona dell'Allerta --- */
 .icona {
-    /* *** MODIFICA CHIAVE #3: Dimensioni Scalabili *** */
-    height: 3.5rem; /* Altezza scalabile (es. 56px) */
-    width: auto;    /* La larghezza si adatta in proporzione */
-    margin-right: 1.5rem; /* Spazio tra icona e testo */
+    height: 3.5rem;
+    width: auto;
+    margin-right: 1.5rem;
 }
 
 /* --- Testo dell'Allerta --- */
 .testo {
-    font-size: 2.25rem; /* Dimensione del testo più grande (es. 36px) */
+    font-size: 2.25rem;
     line-height: 1.2;
-    text-transform: uppercase; /* Testo tutto in maiuscolo, come nell'esempio */
+    text-transform: uppercase;
 }
 
 /* --- Messaggio di Caricamento --- */
@@ -61,9 +67,10 @@ html, body {
     color: white;
     text-align: center;
     width: 100%;
+    padding: 2rem;
 }
 
-/* --- Colori di Sfondo e Testo (invariati ma con colori migliorati) --- */
+/* --- Colori di Sfondo e Testo --- */
 .green { background-color: #009966; color: white; }
 .yellow { background-color: #FFC400; color: black; }
 .orange { background-color: #FF9900; color: black; }
