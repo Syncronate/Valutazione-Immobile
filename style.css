@@ -2,15 +2,19 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    box-sizing: border-box; /* Mantenuto per buona misura */
 }
 
+/* *** MODIFICA CHIAVE #1: Applichiamo il padding qui *** */
 html, body {
     width: 100%;
     height: 100%;
     font-family: Arial, Helvetica, sans-serif;
     background-color: black;
     overflow: hidden;
+    
+    /* Applichiamo la spaziatura esterna al body.
+       Il box-sizing qui è cruciale per evitare che il body diventi più grande dello schermo. */
     padding: 1rem;
 }
 
@@ -19,13 +23,17 @@ html, body {
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 100%;
-    gap: 1rem;
+    height: 100%; /* Occupa tutto lo spazio DENTRO il body paddato */
+    
+    /* *** MODIFICA CHIAVE #2: Rimuoviamo il padding da qui *** */
+    /* padding: 1rem; */ /* RIMOSSO */
+    
+    gap: 1rem; /* Il gap gestisce lo spazio TRA gli elementi */
 }
 
-/* --- Box della Singola Allerta --- */
+/* --- Box della Singola Allerta (invariato) --- */
 .evento {
-    flex: 1;
+    flex: 1; /* Si espande per riempire lo spazio del .container */
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -33,10 +41,9 @@ html, body {
     border-radius: 1rem;
     font-weight: bold;
     overflow: hidden;
-    min-height: 0; /* QUESTA È LA CHIAVE! Permette al flex di ridursi sotto la dimensione del contenuto */
 }
 
-/* --- Icona e Testo --- */
+/* --- Icona e Testo (invariati) --- */
 .icona {
     height: 70%;
     width: auto;
@@ -45,19 +52,16 @@ html, body {
 }
 
 .testo {
-    font-size: clamp(1.5rem, 4.5vh, 4.5vh); /* Font size responsivo con minimo */
+    font-size: 4.5vh;
     line-height: 1.1;
     text-transform: uppercase;
     white-space: normal;
     text-align: left;
     flex-grow: 1;
     overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 3; /* Limita a 3 righe se il testo è troppo lungo */
-    -webkit-box-orient: vertical;
 }
 
-/* --- Stili Colori e Caricamento --- */
+/* --- Stili Colori e Caricamento (invariati) --- */
 .loading { font-size: 2em; color: white; text-align: center; width: 100%; }
 .green { background-color: #009966; color: white; }
 .yellow { background-color: #FFC400; color: black; }
