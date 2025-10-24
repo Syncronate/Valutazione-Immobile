@@ -1,10 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const apiOggi = "https://allertameteo.regione.marche.it/o/api/allerta/get-stato-allerta";
+    // URL originale dell'API
+    const apiUrl = "https://allertameteo.regione.marche.it/o/api/allerta/get-stato-allerta";
     
-    // **** PARTE MODIFICATA ****
-    // Utilizziamo un proxy alternativo e più affidabile.
-    const proxy = "https://corsproxy.io/?"; 
-    
+    // *** MODIFICA CHIAVE ***
+    // Utilizziamo il proxy AllOrigins, che è più robusto e gestisce meglio i problemi di certificati SSL e CORS.
+    const proxyUrl = 'https://api.allorigins.win/raw?url=';
+
     const areeDiInteresse = ["2", "4"];
     const gerarchiaColori = { "red": 4, "orange": 3, "yellow": 2, "green": 1, "white": 0 };
 
@@ -19,13 +20,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function caricaEVisualizzaAllerte() {
         try {
-            // La URL da chiamare ora è composta dal proxy + URL originale
-            const response = await fetch(proxy + encodeURIComponent(apiOggi));
-            if (!response.ok) throw new Error(`Errore HTTP: ${response.status}`);
+            // La URL da chiamare ora è composta dal proxy + l'URL dell'API codificato
+            const response = await fetch(proxyUrl + encodeURIComponent(apiUrl));
+            
+            if (!response.ok) {
+                // Se la risposta non è OK, lancia un errore per attivare il blocco catch
+                throw new Error(`Errore HTTP: ${response.status} ${response.statusText}`);
+            }
+            
             const dati = await response.json();
             
             const allerteFiltrate = dati.filter(item => areeDiInteresse.includes(item.area));
-
             const allerteFinali = {};
             for (const evento in eventiInfo) {
                 allerteFinali[evento] = 'green';
@@ -46,8 +51,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const ordineVisualizzazione = ['idrogeologica', 'idraulica', 'temporali', 'vento', 'neve', 'mareggiate'];
 
             ordineVisualizzazione.forEach(evento => {
-                if (!allerteFinali[evento]) return; // Salta se per qualche motivo l'evento non è nei dati
-
                 const colore = allerteFinali[evento];
                 const info = eventiInfo[evento];
                 const testoAllarme = (colore === 'green' || colore === 'white') ? 'NESSUN ALLARME' : 'ALLARME';
