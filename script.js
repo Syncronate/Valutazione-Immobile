@@ -1,9 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // URL originale dell'API
     const apiUrl = "https://allertameteo.regione.marche.it/o/api/allerta/get-stato-allerta";
     
-    // *** MODIFICA CHIAVE: CAMBIAMO COMPLETAMENTE PROXY ***
-    // Dato che api.allorigins.win è rotto, usiamo Thingproxy.
+    // Usiamo Thingproxy perché è un proxy server che non è soggetto a restrizioni CORS
     const proxyUrl = 'https://thingproxy.freeboard.io/fetch/';
 
     const areeDiInteresse = ["2", "4"];
@@ -20,15 +18,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function caricaEVisualizzaAllerte() {
         try {
-            // La chiamata ora è composta dal nuovo proxy + l'URL dell'API
             const response = await fetch(proxyUrl + apiUrl);
             
             if (!response.ok) {
                 throw new Error(`Errore HTTP: ${response.status} ${response.statusText}`);
             }
             
-            // *** MODIFICA CHIAVE: Torniamo al metodo di lettura originale ***
-            // Questo proxy restituisce i dati direttamente, quindi non serve più ".contents"
             const dati = await response.json();
             
             const allerteFiltrate = dati.filter(item => areeDiInteresse.includes(item.area));
